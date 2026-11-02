@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Job Chart</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg:#111112;--bg2:#18181b;--bg3:#1f1f23;--surface:#27272c;
+    --border:rgba(255,255,255,0.07);--fg:#f4f4f5;--fg-muted:#71717a;--fg-dim:#3f3f46;
+    --orange:#f97316;--orange-dim:rgba(249,115,22,0.15);
+    --green:#22c55e;--green-dim:rgba(34,197,94,0.12);--done-fg:#86efac;
+    --gold:#fbbf24;--gold-dim:rgba(251,191,36,0.13);--modal-bg:rgba(0,0,0,0.78);
+    --radius:16px;--radius-sm:10px;
+    --k1:#f97316;--k2:#a78bfa;--k3:#38bdf8;--k4:#f472b6;
+    --k5:#4ade80;--k6:#fb923c;--k7:#e879f9;--k8:#34d399;
+    color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--fg);font-size:15px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  #app{display:flex;flex-direction:column;min-height:100%;padding:0 20px 40px}
+  header{position:sticky;top:0;z-index:20;background:var(--bg);padding:18px 0 0;display:flex;align-items:flex-end;gap:16px}
+  .header-left{flex:1;min-width:0}
+  .header-dayname{font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:900;letter-spacing:-.01em;line-height:1;text-transform:uppercase}
+  .header-date{font-size:.75rem;font-weight:500;color:var(--fg-muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+  .header-actions{display:flex;gap:8px;flex-shrink:0;padding-bottom:4px}
+  .btn-icon{width:38px;height:38px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--fg-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:color .15s,background .15s,transform .1s;font-family:inherit}
+  .btn-icon:hover{color:var(--fg);background:var(--bg3)}
+  .btn-icon:active{transform:scale(.92)}
+  .tab-nav{display:flex;margin:14px 0 0;border-bottom:1px solid var(--border)}
+  .tab-btn{padding:9px 18px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:color .15s,border-color .15s;margin-bottom:-1px}
+  .tab-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
+  .tab-btn:hover:not(.active){color:var(--fg)}
+  .day-strip{display:flex;gap:6px;margin:14px 0 0;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .day-strip::-webkit-scrollbar{display:none}
+  .day-pill{flex-shrink:0;padding:7px 14px;border-radius:99px;border:none;background:var(--bg3);color:var(--fg-muted);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .15s,color .15s;display:flex;flex-direction:column;align-items:center;gap:1px;line-height:1.2}
+  .day-pill .pill-name{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em}
+  .day-pill .pill-num{font-size:1rem;font-weight:700}
+  .day-pill:hover{background:var(--surface);color:var(--fg)}
+  .day-pill.active{background:var(--orange);color:#fff}
+  .day-pill.today:not(.active){color:var(--orange)}
+  .overall-bar-row{display:flex;align-items:center;gap:12px;margin:14px 0 0}
+  .overall-bar{flex:1;height:3px;border-radius:99px;background:var(--bg3);overflow:hidden}
+  .overall-fill{height:100%;border-radius:99px;background:var(--orange);transition:width .5s cubic-bezier(.4,0,.2,1)}
+  .overall-label{font-size:.75rem;font-weight:600;color:var(--fg-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .kids-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:20px}
+  .kid-card{background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
+  .kid-top{padding:16px 16px 14px;display:flex;align-items:center;gap:12px}
+  .kid-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+  .kid-info{flex:1;min-width:0}
+  .kid-name{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;letter-spacing:.01em;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kid-pts-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+  .kid-bank{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);color:var(--gold);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;font-variant-numeric:tabular-nums}
+  .kid-earned-today{font-size:.72rem;font-weight:600;color:var(--fg-muted);font-variant-numeric:tabular-nums}
+  .ring-wrap{flex-shrink:0;position:relative;width:40px;height:40px}
+  .ring-wrap svg{transform:rotate(-90deg)}
+  .ring-bg{fill:none;stroke:var(--bg3);stroke-width:3.5}
+  .ring-fg{fill:none;stroke-width:3.5;stroke-linecap:round;transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1)}
+  .ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg-muted)}
+  .kid-edit-btn{width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s;flex-shrink:0}
+  .kid-edit-btn:hover{background:var(--bg3);color:var(--fg-muted)}
+  .kid-jobs{padding:0 12px 8px;display:flex;flex-direction:column;gap:6px}
+  .job-btn{width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:500;cursor:pointer;text-align:left;transition:background .15s,transform .1s;position:relative;overflow:hidden}
+  .job-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:transparent;transition:background .15s}
+  .job-btn.done{background:var(--green-dim)}
+  .job-btn.done::before{background:var(--green)}
+  .job-btn:hover:not(.done){background:var(--surface)}
+  .job-btn:active{transform:scale(.98)}
+  .job-check-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--fg-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.8rem;transition:background .15s,border-color .15s;color:transparent}
+  .job-btn.done .job-check-circle{background:var(--green);border-color:var(--green);color:#fff}
+  .job-name{flex:1;min-width:0;line-height:1.3}
+  .job-btn.done .job-name{color:var(--done-fg);text-decoration:line-through;text-decoration-color:var(--green);text-decoration-thickness:1.5px}
+  .job-pts{font-size:.7rem;font-weight:700;color:var(--fg-dim);flex-shrink:0;font-variant-numeric:tabular-nums}
+  .job-btn.done .job-pts{color:var(--done-fg);opacity:.7}
+  .no-jobs{padding:14px 12px;text-align:center;color:var(--fg-dim);font-size:.85rem}
+  .kid-footer{padding:10px 12px 12px;display:flex;gap:8px}
+  .btn-redeem{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 12px;border-radius:var(--radius-sm);border:none;background:var(--gold-dim);color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+  .btn-redeem:hover{background:rgba(251,191,36,.22)}
+  .btn-redeem:disabled{opacity:.35;cursor:not-allowed}
+  .rewards-section{margin-top:20px}
+  .rewards-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .rewards-title{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--fg-muted)}
+  .btn-add-reward{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:color .15s,background .15s}
+  .btn-add-reward:hover{color:var(--fg);background:var(--bg3)}
+  .rewards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+  .reward-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:8px}
+  .reward-card-top{display:flex;align-items:flex-start;gap:10px}
+  .reward-icon{font-size:1.8rem;line-height:1;flex-shrink:0}
+  .reward-info{flex:1;min-width:0}
+  .reward-name{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .reward-cat{font-size:.7rem;font-weight:600;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+  .reward-cost{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);color:var(--gold);font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums;width:fit-content}
+  .reward-card-actions{display:flex;gap:6px}
+  .btn-edit-reward{flex:1;padding:7px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--fg-muted);font-family:'Inter',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:background .15s,color .15s}
+  .btn-edit-reward:hover{background:var(--bg3);color:var(--fg)}
+  .history-section{margin-top:28px}
+  .history-title{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--fg-muted);margin-bottom:12px}
+  .history-list{display:flex;flex-direction:column;gap:8px}
+  .history-row{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px}
+  .history-emoji{font-size:1.2rem;flex-shrink:0}
+  .history-info{flex:1;min-width:0}
+  .history-who{font-size:.85rem;font-weight:700}
+  .history-what{font-size:.78rem;color:var(--fg-muted);margin-top:1px}
+  .history-pts{font-size:.8rem;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .history-date{font-size:.7rem;color:var(--fg-dim);white-space:nowrap}
+  .no-history{padding:32px 0;text-align:center;color:var(--fg-dim);font-size:.9rem}
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:80px 20px;text-align:center;color:var(--fg-muted)}
+  .empty-icon{font-size:3.5rem}
+  .empty-state h2{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;text-transform:uppercase;color:var(--fg)}
+  .empty-state p{font-size:.9rem;max-width:260px}
+  .btn-primary{background:var(--orange);color:#fff;border:none;padding:11px 24px;border-radius:var(--radius-sm);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;margin-top:4px}
+  .btn-primary:hover{opacity:.88}
+  .modal-backdrop{position:fixed;inset:0;background:var(--modal-bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fade-in .18s ease}
+  @keyframes fade-in{from{opacity:0}to{opacity:1}}
+  @keyframes slide-up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.6);padding:24px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;animation:slide-up .22s ease}
+  .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;margin-bottom:20px}
+  .m-sec{margin-bottom:18px}
+  .m-sec label{display:block;font-size:.7rem;font-weight:700;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+  .m-sec input[type="text"],.m-sec input[type="number"],.m-sec select{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;outline:none;transition:border-color .15s}
+  .m-sec input:focus,.m-sec select:focus{border-color:var(--orange)}
+  .m-sec select option{background:var(--bg2)}
+  .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
+  .emoji-btn{aspect-ratio:1;font-size:1.25rem;border:2px solid transparent;border-radius:8px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;padding:0}
+  .emoji-btn:hover{background:var(--surface)}
+  .emoji-btn.selected{border-color:var(--orange)}
+  .color-grid{display:flex;gap:8px;flex-wrap:wrap}
+  .color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;outline:2px solid transparent;outline-offset:3px;transition:outline-color .12s,transform .1s}
+  .color-swatch:hover{transform:scale(1.1)}
+  .color-swatch.selected{outline-color:var(--fg)}
+  .job-list-edit{display:flex;flex-direction:column;gap:6px}
+  .job-edit-row{display:flex;gap:6px;align-items:center}
+  .job-edit-row input[type="text"]{flex:1}
+  .job-edit-row input[type="number"]{width:64px;flex-shrink:0}
+  .job-edit-row .rm-btn{width:34px;height:34px;flex-shrink:0;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.9rem;transition:background .12s,color .12s}
+  .job-edit-row .rm-btn:hover{background:var(--bg3);color:var(--fg-muted)}
+  .btn-add-job{width:100%;padding:9px 12px;border:1px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:6px;transition:border-color .15s,color .15s}
+  .btn-add-job:hover{border-color:var(--fg-muted);color:var(--fg)}
+  .modal-actions{display:flex;gap:8px;margin-top:6px}
+  .btn-cancel{flex:1;padding:11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+  .btn-cancel:hover{background:var(--bg3)}
+  .btn-save{flex:2;padding:11px;border:none;border-radius:var(--radius-sm);background:var(--orange);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+  .btn-save:hover{opacity:.88}
+  .btn-danger{padding:11px 16px;border:1px solid rgba(239,68,68,.4);border-radius:var(--radius-sm);background:transparent;color:#f87171;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+  .btn-danger:hover{background:rgba(239,68,68,.1)}
+  .modal p{font-size:.9rem;color:var(--fg-muted);margin-bottom:18px;line-height:1.5}
+  .modal-icon{font-size:2.5rem;margin-bottom:8px}
+  .reward-pick-list{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+  .reward-pick-btn{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--fg);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s}
+  .reward-pick-btn:hover:not(:disabled){border-color:var(--gold);background:var(--bg2)}
+  .reward-pick-btn:disabled{opacity:.35;cursor:not-allowed}
+  .rp-icon{font-size:1.4rem;flex-shrink:0}
+  .rp-info{flex:1;min-width:0}
+  .rp-name{font-weight:600;font-size:.95rem}
+  .rp-cat{font-size:.75rem;color:var(--fg-muted)}
+  .rp-cost{font-size:.85rem;font-weight:700;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);border:1px solid var(--border);color:var(--fg);padding:10px 20px;border-radius:99px;font-size:.85rem;font-weight:600;pointer-events:none;z-index:200;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:480px){.kids-grid{grid-template-columns:1fr}.rewards-grid{grid-template-columns:1fr 1fr}.header-dayname{font-size:2.2rem}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="header-dayname" id="headerDay">Monday</div>
+      <div class="header-date" id="headerDate"></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnReset" title="Reset day">↺</button>
+      <button class="btn-icon" id="btnAddKid" title="Add child">+</button>
+      <button class="btn-icon" id="btnSettings" title="Manage">⚙</button>
+    </div>
+  </header>
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="jobs">Jobs</button>
+    <button class="tab-btn" data-tab="rewards">Rewards</button>
+  </nav>
+  <div id="tabJobs">
+    <div class="day-strip" id="dayStrip"></div>
+    <div class="overall-bar-row">
+      <div class="overall-bar"><div class="overall-fill" id="overallFill" style="width:0%"></div></div>
+      <span class="overall-label" id="overallLabel">0 / 0</span>
+    </div>
+    <div id="kidsGrid" class="kids-grid"></div>
+    <div id="emptyState"></div>
+  </div>
+  <div id="tabRewards" hidden>
+    <div class="rewards-section">
+      <div class="rewards-header">
+        <span class="rewards-title">Reward Store</span>
+        <button class="btn-add-reward" id="btnAddReward">+ Add Reward</button>
+      </div>
+      <div class="rewards-grid" id="rewardsGrid"></div>
+    </div>
+    <div class="history-section">
+      <div class="history-title">Redemption History</div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DAYS_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS_S=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const EMOJIS=['😀','😎','🤩','🥳','🦊','🐶','🐱','🐸','🐼','🦁','🐯','🦄','🦋','🌟','⚡','🔥','🎯','🏆','💪','🎮'];
+const KID_COLORS=['--k1','--k2','--k3','--k4','--k5','--k6','--k7','--k8'];
+const REWARD_EMOJIS=['💵','🛍️','🎮','🍕','🎬','🏆','⭐','🎁','🍦','🏖️','🎵','📱','🎨','🚗','🎠','🌮','🎪','🏀','🎤','🌟'];
+const REWARD_CATS=['Cash','Shopping','Screen Time','Food','Activity','Experience','Other'];
+const COLOR_MAP={'--k1':'#f97316','--k2':'#a78bfa','--k3':'#38bdf8','--k4':'#f472b6','--k5':'#4ade80','--k6':'#fb923c','--k7':'#e879f9','--k8':'#34d399'};
+
+// ── Storage ──
+function load(key,def){try{const v=localStorage.getItem('jc_'+key);return v?JSON.parse(v):def;}catch{return def;}}
+function save(key,val){try{localStorage.setItem('jc_'+key,JSON.stringify(val));}catch{}}
+
+let kids    = load('kids',[]);
+let checks  = load('checks',{});
+let banks   = load('banks',{});
+let rewards = load('rewards',[]);
+let history = load('history',[]);
+let selectedDay = new Date().getDay();
+let activeTab = 'jobs';
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function cv(t){return COLOR_MAP[t]||t;}
+
+function weekKey(){
+  const d=new Date();d.setDate(d.getDate()-d.getDay());d.setHours(0,0,0,0);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function checkKey(kidId,jobId,day){return `${kidId}_${jobId}_${weekKey()}_${day}`;}
+function fmtDate(ts){const d=new Date(ts);return `${MONTHS_S[d.getMonth()]} ${d.getDate()}`;}
+function kidBank(kidId){return banks[kidId]??0;}
+
+function showToast(msg,dur=2200){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+// ── Tabs ──
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    activeTab=btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b===btn));
+    document.getElementById('tabJobs').hidden=activeTab!=='jobs';
+    document.getElementById('tabRewards').hidden=activeTab!=='rewards';
+    if(activeTab==='rewards')renderRewards();
+  });
+});
+
+// ── Day strip ──
+function buildDayStrip(){
+  const strip=document.getElementById('dayStrip');
+  const today=new Date();
+  const ws=new Date();ws.setDate(today.getDate()-today.getDay());ws.setHours(0,0,0,0);
+  strip.innerHTML='';
+  for(let i=0;i<7;i++){
+    const d=new Date(ws);d.setDate(ws.getDate()+i);
+    const isToday=d.toDateString()===today.toDateString();
+    const pill=document.createElement('button');
+    pill.className='day-pill'+(i===selectedDay?' active':'')+(isToday?' today':'');
+    pill.innerHTML=`<span class="pill-name">${DAYS_SHORT[i]}</span><span class="pill-num">${d.getDate()}</span>`;
+    pill.addEventListener('click',()=>{selectedDay=i;buildDayStrip();renderJobs();});
+    strip.appendChild(pill);
+  }
+  const selDate=new Date(ws);selDate.setDate(ws.getDate()+selectedDay);
+  document.getElementById('headerDay').textContent=DAYS_FULL[selectedDay];
+  document.getElementById('headerDate').textContent=`${MONTHS_S[selDate.getMonth()]} ${selDate.getDate()} · Week of ${MONTHS_S[ws.getMonth()]} ${ws.getDate()}`;
+}
+
+// ── Render jobs ──
+function renderJobs(){
+  buildDayStrip();
+  const grid=document.getElementById('kidsGrid');
+  const empty=document.getElementById('emptyState');
+  if(!kids.length){
+    grid.innerHTML='';empty.innerHTML=`<div class="empty-state"><div class="empty-icon">⭐</div><h2>No kids yet</h2><p>Add your first child to start the job chart.</p><button class="btn-primary" id="emptyBtn">Add a child</button></div>`;
+    document.getElementById('emptyBtn')?.addEventListener('click',()=>openKidModal(null));
+    updateOverall(0,0);return;
+  }
+  empty.innerHTML='';grid.innerHTML='';
+  let totalDone=0,totalAll=0;
+  for(const kid of kids){
+    const col=cv(kid.color||'--k1');
+    const jobs=kid.jobs||[];
+    const done=jobs.filter(j=>checks[checkKey(kid.id,j.id,selectedDay)]).length;
+    const todayPts=jobs.reduce((s,j)=>s+(checks[checkKey(kid.id,j.id,selectedDay)]?(j.points||1):0),0);
+    const bank=kidBank(kid.id);
+    totalDone+=done;totalAll+=jobs.length;
+    const r=16,circ=2*Math.PI*r;
+    const offset=circ*(1-(jobs.length?done/jobs.length:0));
+    const card=document.createElement('div');
+    card.className='kid-card';
+    card.innerHTML=`
+      <div class="kid-top">
+        <div class="kid-avatar" style="background:${col}22">${kid.emoji||'⭐'}</div>
+        <div class="kid-info">
+          <div class="kid-name" style="color:${col}">${esc(kid.name)}</div>
+          <div class="kid-pts-row">
+            <span class="kid-bank"><span>⭐</span>${bank} pts</span>
+            <span class="kid-earned-today">+${todayPts} today</span>
+          </div>
+        </div>
+        <div class="ring-wrap">
+          <svg width="40" height="40" viewBox="0 0 40 40">
+            <circle class="ring-bg" cx="20" cy="20" r="${r}"/>
+            <circle class="ring-fg" cx="20" cy="20" r="${r}" stroke="${col}" stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+          </svg>
+          <div class="ring-label">${done}/${jobs.length}</div>
+        </div>
+        <button class="kid-edit-btn" data-kid="${kid.id}">✎</button>
+      </div>
+      <div class="kid-jobs" id="kj-${kid.id}"></div>
+      <div class="kid-footer">
+        <button class="btn-redeem" data-redeem="${kid.id}" ${rewards.length===0||bank===0?'disabled':''}>⭐ Redeem (${bank} pts)</button>
+      </div>`;
+    const jobsEl=card.querySelector(`#kj-${kid.id}`);
+    if(!jobs.length){jobsEl.innerHTML=`<div class="no-jobs">No jobs added</div>`;}
+    else{
+      for(const job of jobs){
+        const isDone=!!checks[checkKey(kid.id,job.id,selectedDay)];
+        const btn=document.createElement('button');
+        btn.className='job-btn'+(isDone?' done':'');
+        btn.innerHTML=`<div class="job-check-circle">${isDone?'✓':''}</div><span class="job-name">${esc(job.label)}</span><span class="job-pts">${job.points||1}pt</span>`;
+        btn.addEventListener('click',()=>toggleJob(kid.id,job.id));
+        jobsEl.appendChild(btn);
+      }
+    }
+    card.querySelector('[data-kid]')?.addEventListener('click',()=>openKidModal(kid));
+    card.querySelector('[data-redeem]')?.addEventListener('click',()=>openRedeemModal(kid));
+    grid.appendChild(card);
+  }
+  updateOverall(totalDone,totalAll);
+}
+
+function updateOverall(done,total){
+  const pct=total?done/total*100:0;
+  document.getElementById('overallFill').style.width=pct+'%';
+  document.getElementById('overallLabel').textContent=`${done} / ${total} jobs done`;
+}
+
+// ── Render rewards ──
+function renderRewards(){
+  const grid=document.getElementById('rewardsGrid');
+  if(!rewards.length){grid.innerHTML=`<div style="grid-column:1/-1;padding:32px 0;text-align:center;color:var(--fg-dim);font-size:.9rem">No rewards yet — add one!</div>`;}
+  else{
+    grid.innerHTML=rewards.map(r=>`
+      <div class="reward-card">
+        <div class="reward-card-top"><div class="reward-icon">${r.emoji||'🎁'}</div><div class="reward-info"><div class="reward-name">${esc(r.name)}</div><div class="reward-cat">${esc(r.category||'')}</div></div></div>
+        <div class="reward-cost">⭐ ${r.cost} pts</div>
+        <div class="reward-card-actions"><button class="btn-edit-reward" data-rid="${r.id}">Edit</button></div>
+      </div>`).join('');
+    grid.querySelectorAll('[data-rid]').forEach(btn=>{btn.onclick=()=>openRewardModal(rewards.find(r=>r.id===btn.dataset.rid));});
+  }
+  const hist=document.getElementById('historyList');
+  if(!history.length){hist.innerHTML=`<div class="no-history">No redemptions yet</div>`;}
+  else{
+    const sorted=[...history].sort((a,b)=>b.ts-a.ts).slice(0,30);
+    hist.innerHTML=sorted.map(h=>{
+      const kid=kids.find(k=>k.id===h.kidId);
+      return `<div class="history-row"><div class="history-emoji">${h.emoji||'🎁'}</div><div class="history-info"><div class="history-who">${esc(kid?.name||'Unknown')}</div><div class="history-what">${esc(h.rewardName)}</div></div><div class="history-pts">−${h.cost} pts</div><div class="history-date">${fmtDate(h.ts)}</div></div>`;
+    }).join('');
+  }
+}
+
+function render(){renderJobs();if(activeTab==='rewards')renderRewards();}
+
+// ── Toggle job ──
+function toggleJob(kidId,jobId){
+  const key=checkKey(kidId,jobId,selectedDay);
+  const was=!!checks[key];
+  const kid=kids.find(k=>k.id===kidId);
+  const job=kid?.jobs?.find(j=>j.id===jobId);
+  const pts=job?.points||1;
+  was?delete checks[key]:(checks[key]=true);
+  banks[kidId]=(banks[kidId]||0)+(was?-pts:pts);
+  if(banks[kidId]<0)banks[kidId]=0;
+  save('checks',checks);save('banks',banks);
+  render();
+  if(!was)showToast(`✅ Great job, ${kid?.name||'kiddo'}! +${pts}pts`);
+}
+
+// ── Redeem ──
+function openRedeemModal(kid){
+  const bank=kidBank(kid.id);
+  openModal(`
+    <h2>Redeem — ${esc(kid.name)}</h2>
+    <p style="margin-bottom:10px"><span class="kid-bank" style="font-size:.9rem"><span>⭐</span>${bank} pts available</span></p>
+    <div class="reward-pick-list" id="rewardPickList">
+      ${rewards.map(r=>`<button class="reward-pick-btn" data-rid="${r.id}" ${bank<r.cost?'disabled':''}><span class="rp-icon">${r.emoji||'🎁'}</span><div class="rp-info"><div class="rp-name">${esc(r.name)}</div><div class="rp-cat">${esc(r.category||'')}</div></div><span class="rp-cost">⭐ ${r.cost}</span></button>`).join('')}
+      ${!rewards.length?`<div style="text-align:center;padding:24px;color:var(--fg-dim)">No rewards set up yet</div>`:''}
+    </div>
+    <div class="modal-actions"><button class="btn-cancel" id="mCancel">Cancel</button></div>`);
+  document.getElementById('mCancel').onclick=closeModal;
+  document.querySelectorAll('.reward-pick-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      const reward=rewards.find(r=>r.id===btn.dataset.rid);if(!reward)return;
+      if(kidBank(kid.id)<reward.cost){showToast('Not enough points!');return;}
+      banks[kid.id]=(banks[kid.id]||0)-reward.cost;
+      const entry={id:uid(),kidId:kid.id,rewardId:reward.id,rewardName:reward.name,emoji:reward.emoji,cost:reward.cost,ts:Date.now()};
+      history.unshift(entry);
+      save('banks',banks);save('history',history);
+      closeModal();render();showToast(`🎉 ${kid.name} redeemed ${reward.name}!`);
+    };
+  });
+}
+
+// ── Modals ──
+function openModal(html){
+  closeModal();
+  const bd=document.createElement('div');bd.className='modal-backdrop';bd.id='modal-bd';
+  bd.innerHTML=`<div class="modal">${html}</div>`;
+  bd.addEventListener('click',e=>{if(e.target===bd)closeModal();});
+  document.body.appendChild(bd);
+}
+function closeModal(){document.getElementById('modal-bd')?.remove();}
+
+function jobRow(label='',pts=1){
+  const jid=uid();
+  return `<div class="job-edit-row" data-jid="${jid}"><input type="text" value="${esc(label)}" placeholder="Job name" maxlength="50"><input type="number" value="${pts}" min="1" max="99" title="Points"><button class="rm-btn" type="button">✕</button></div>`;
+}
+function wireRm(){document.querySelectorAll('.rm-btn').forEach(b=>{b.onclick=()=>b.closest('.job-edit-row').remove();});}
+
+function openKidModal(kid){
+  const isNew=!kid;
+  const name=kid?.name||'',emoji=kid?.emoji||'😎',color=kid?.color||'--k1',jobs=kid?.jobs||[];
+  openModal(`
+    <h2>${isNew?'Add Child':'Edit '+esc(kid.name)}</h2>
+    <div class="m-sec"><label>Name</label><input type="text" id="mName" value="${esc(name)}" placeholder="Child's name" maxlength="30"></div>
+    <div class="m-sec"><label>Avatar</label><div class="emoji-grid">${EMOJIS.map(e=>`<button class="emoji-btn${e===emoji?' selected':''}" data-e="${e}" type="button">${e}</button>`).join('')}</div></div>
+    <div class="m-sec"><label>Color</label><div class="color-grid">${KID_COLORS.map(c=>`<div class="color-swatch${c===color?' selected':''}" data-c="${c}" style="background:${cv(c)}"></div>`).join('')}</div></div>
+    <div class="m-sec"><label>Jobs</label><div class="job-list-edit" id="mJobs">${jobs.map(j=>jobRow(j.label,j.points||1)).join('')}</div><button class="btn-add-job" id="mAddJob" type="button">+ Add job</button></div>
+    <div class="modal-actions">${!isNew?`<button class="btn-danger" id="mDel">Delete</button>`:''}<button class="btn-cancel" id="mCancel">Cancel</button><button class="btn-save" id="mSave">${isNew?'Add Child':'Save'}</button></div>`);
+  let selEmoji=emoji,selColor=color;
+  document.getElementById('mName').focus();
+  document.querySelector('.emoji-grid').addEventListener('click',e=>{const b=e.target.closest('.emoji-btn');if(!b)return;selEmoji=b.dataset.e;document.querySelectorAll('.emoji-btn').forEach(x=>x.classList.toggle('selected',x===b));});
+  document.querySelector('.color-grid').addEventListener('click',e=>{const s=e.target.closest('.color-swatch');if(!s)return;selColor=s.dataset.c;document.querySelectorAll('.color-swatch').forEach(x=>x.classList.toggle('selected',x===s));});
+  document.getElementById('mAddJob').onclick=()=>{const list=document.getElementById('mJobs');const tmp=document.createElement('div');tmp.innerHTML=jobRow();list.appendChild(tmp.firstElementChild);wireRm();list.lastElementChild.querySelector('input').focus();};
+  wireRm();
+  document.getElementById('mCancel').onclick=closeModal;
+  document.getElementById('mDel')?.addEventListener('click',()=>{kids=kids.filter(k=>k.id!==kid.id);save('kids',kids);closeModal();render();showToast(`🗑️ Removed ${kid.name}`);});
+  document.getElementById('mSave').onclick=()=>{
+    const nameVal=document.getElementById('mName').value.trim();if(!nameVal){document.getElementById('mName').focus();return;}
+    const newJobs=[];
+    document.querySelectorAll('.job-edit-row').forEach(row=>{const lbl=row.querySelector('input[type="text"]').value.trim();const pts=parseInt(row.querySelector('input[type="number"]').value)||1;if(lbl)newJobs.push({id:row.dataset.jid||uid(),label:lbl,points:pts});});
+    if(isNew)kids.push({id:uid(),name:nameVal,emoji:selEmoji,color:selColor,jobs:newJobs});
+    else{const i=kids.findIndex(k=>k.id===kid.id);kids[i]={...kids[i],name:nameVal,emoji:selEmoji,color:selColor,jobs:newJobs};}
+    save('kids',kids);closeModal();render();showToast(isNew?`🎉 Added ${nameVal}!`:`✅ Saved ${nameVal}`);
+  };
+}
+
+function openRewardModal(reward){
+  const isNew=!reward;
+  const name=reward?.name||'',emoji=reward?.emoji||'🎁',cat=reward?.category||'Cash',cost=reward?.cost||10;
+  openModal(`
+    <h2>${isNew?'Add Reward':'Edit Reward'}</h2>
+    <div class="m-sec"><label>Name</label><input type="text" id="rName" value="${esc(name)}" placeholder="e.g. Extra Screen Time" maxlength="40"></div>
+    <div class="m-sec"><label>Icon</label><div class="emoji-grid">${REWARD_EMOJIS.map(e=>`<button class="emoji-btn${e===emoji?' selected':''}" data-e="${e}" type="button">${e}</button>`).join('')}</div></div>
+    <div class="m-sec"><label>Category</label><select id="rCat">${REWARD_CATS.map(c=>`<option value="${c}"${c===cat?' selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="m-sec"><label>Points cost</label><input type="number" id="rCost" value="${cost}" min="1" max="9999"></div>
+    <div class="modal-actions">${!isNew?`<button class="btn-danger" id="rDel">Delete</button>`:''}<button class="btn-cancel" id="rCancel">Cancel</button><button class="btn-save" id="rSave">${isNew?'Add Reward':'Save'}</button></div>`);
+  let selEmoji=emoji;
+  document.querySelector('.emoji-grid').addEventListener('click',e=>{const b=e.target.closest('.emoji-btn');if(!b)return;selEmoji=b.dataset.e;document.querySelectorAll('.emoji-btn').forEach(x=>x.classList.toggle('selected',x===b));});
+  document.getElementById('rCancel').onclick=closeModal;
+  document.getElementById('rDel')?.addEventListener('click',()=>{rewards=rewards.filter(r=>r.id!==reward.id);save('rewards',rewards);closeModal();renderRewards();render();showToast('🗑️ Reward removed');});
+  document.getElementById('rSave').onclick=()=>{
+    const nameVal=document.getElementById('rName').value.trim();if(!nameVal){document.getElementById('rName').focus();return;}
+    const catVal=document.getElementById('rCat').value;const costVal=parseInt(document.getElementById('rCost').value)||1;
+    if(isNew)rewards.push({id:uid(),name:nameVal,emoji:selEmoji,category:catVal,cost:costVal});
+    else{const i=rewards.findIndex(r=>r.id===reward.id);rewards[i]={...rewards[i],name:nameVal,emoji:selEmoji,category:catVal,cost:costVal};}
+    save('rewards',rewards);closeModal();renderRewards();render();showToast(isNew?`🎁 Added ${nameVal}!`:`✅ Saved ${nameVal}`);
+  };
+}
+
+function openResetModal(){
+  openModal(`<div class="modal-icon">↺</div><h2>Reset ${DAYS_FULL[selectedDay]}</h2><p>Clear all completed jobs for today? Points will be adjusted.</p><div class="modal-actions"><button class="btn-cancel" id="mCancel">Cancel</button><button class="btn-save" id="mConfirm">Reset Day</button></div>`);
+  document.getElementById('mCancel').onclick=closeModal;
+  document.getElementById('mConfirm').onclick=()=>{
+    const suffix=`_${weekKey()}_${selectedDay}`;
+    Object.keys(checks).filter(k=>k.endsWith(suffix)).forEach(k=>{
+      const parts=k.split('_');const kidId=parts[0],jobId=parts[1];
+      const kid=kids.find(x=>x.id===kidId);const job=kid?.jobs?.find(j=>j.id===jobId);
+      const pts=job?.points||1;
+      banks[kidId]=(banks[kidId]||0)-pts;if(banks[kidId]<0)banks[kidId]=0;
+      delete checks[k];
+    });
+    save('checks',checks);save('banks',banks);
+    closeModal();render();showToast('↺ Day reset');
+  };
+}
+
+function openManageModal(){
+  if(!kids.length){openKidModal(null);return;}
+  openModal(`
+    <h2>Manage Children</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      ${kids.map(k=>`<button class="job-btn" data-kid="${k.id}" style="border-left:3px solid ${cv(k.color||'--k1')}"><span style="font-size:1.2rem;flex-shrink:0">${k.emoji||'⭐'}</span><span class="job-name" style="font-size:.95rem;font-weight:600">${esc(k.name)}</span><span style="color:var(--fg-muted);font-size:.8rem">${(k.jobs||[]).length} jobs · ${kidBank(k.id)} pts</span><span style="color:var(--fg-dim)">›</span></button>`).join('')}
+    </div>
+    <div class="modal-actions"><button class="btn-cancel" id="mClose">Close</button><button class="btn-save" id="mAddNew">+ Add Child</button></div>`);
+  document.getElementById('mClose').onclick=closeModal;
+  document.getElementById('mAddNew').onclick=()=>{closeModal();openKidModal(null);};
+  document.querySelectorAll('[data-kid]').forEach(btn=>{btn.onclick=()=>{const k=kids.find(x=>x.id===btn.dataset.kid);if(k){closeModal();openKidModal(k);}};});
+}
+
+document.getElementById('btnAddKid').onclick=()=>openKidModal(null);
+document.getElementById('btnReset').onclick=openResetModal;
+document.getElementById('btnSettings').onclick=openManageModal;
+document.getElementById('btnAddReward').onclick=()=>openRewardModal(null);
+
+render();
+</script>
+</body>
+</html>
