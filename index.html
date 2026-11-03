@@ -19,7 +19,7 @@
     color-scheme:dark;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;width:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--fg);font-size:18px;overflow:hidden;-webkit-font-smoothing:antialiased}
+  html,body{height:100%;width:100%;font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--fg);font-size:20px;overflow:hidden;-webkit-font-smoothing:antialiased}
   #app{display:flex;flex-direction:column;height:100vh;padding:0 32px 24px;overflow:hidden}
   header{z-index:20;background:var(--bg);padding:16px 0 0;display:flex;align-items:flex-end;gap:16px;flex-shrink:0}
   .header-left{flex:1;min-width:0}
@@ -45,14 +45,14 @@
   .overall-bar{flex:1;height:3px;border-radius:99px;background:var(--bg3);overflow:hidden}
   .overall-fill{height:100%;border-radius:99px;background:var(--orange);transition:width .5s cubic-bezier(.4,0,.2,1)}
   .overall-label{font-size:.75rem;font-weight:600;color:var(--fg-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-  .kids-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-top:16px;overflow-y:auto;flex:1}
+  .kids-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px;overflow-y:auto;flex:1}
   .kid-card{background:var(--bg2);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden}
-  .kid-top{padding:16px 16px 14px;display:flex;align-items:center;gap:12px}
-  .kid-avatar{width:64px;height:64px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;flex-shrink:0}
+  .kid-top{padding:20px 18px 16px;display:flex;align-items:center;gap:14px}
+  .kid-avatar{width:72px;height:72px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;flex-shrink:0}
   .kid-info{flex:1;min-width:0}
-  .kid-name{font-family:'Barlow Condensed',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:.01em;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kid-name{font-family:'Barlow Condensed',sans-serif;font-size:2.6rem;font-weight:800;letter-spacing:.01em;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .kid-pts-row{display:flex;align-items:center;gap:6px;margin-top:4px}
-  .kid-bank{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);color:var(--gold);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;font-variant-numeric:tabular-nums}
+  .kid-bank{display:inline-flex;align-items:center;gap:4px;background:var(--gold-dim);color:var(--gold);font-size:.9rem;font-weight:700;padding:4px 12px;border-radius:99px;font-variant-numeric:tabular-nums}
   .kid-earned-today{font-size:.72rem;font-weight:600;color:var(--fg-muted);font-variant-numeric:tabular-nums}
   .ring-wrap{flex-shrink:0;position:relative;width:40px;height:40px}
   .ring-wrap svg{transform:rotate(-90deg)}
@@ -61,14 +61,14 @@
   .ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg-muted)}
   .kid-edit-btn{width:28px;height:28px;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s;flex-shrink:0}
   .kid-edit-btn:hover{background:var(--bg3);color:var(--fg-muted)}
-  .kid-jobs{padding:0 12px 8px;display:flex;flex-direction:column;gap:6px}
-  .job-btn{width:100%;display:flex;align-items:center;gap:10px;padding:15px 16px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1rem;font-weight:500;cursor:pointer;text-align:left;transition:background .15s,transform .1s;position:relative;overflow:hidden}
+  .kid-jobs{padding:0 14px 10px;display:flex;flex-direction:column;gap:8px}
+  .job-btn{width:100%;display:flex;align-items:center;gap:12px;padding:18px 16px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:500;cursor:pointer;text-align:left;transition:background .15s,transform .1s;position:relative;overflow:hidden}
   .job-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:transparent;transition:background .15s}
   .job-btn.done{background:var(--green-dim)}
   .job-btn.done::before{background:var(--green)}
   .job-btn:hover:not(.done){background:var(--surface)}
   .job-btn:active{transform:scale(.98)}
-  .job-check-circle{width:22px;height:22px;border-radius:50%;border:2px solid var(--fg-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.8rem;transition:background .15s,border-color .15s;color:transparent}
+  .job-check-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--fg-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;transition:background .15s,border-color .15s;color:transparent}
   .job-btn.done .job-check-circle{background:var(--green);border-color:var(--green);color:#fff}
   .job-name{flex:1;min-width:0;line-height:1.3}
   .job-btn.done .job-name{color:var(--done-fg);text-decoration:line-through;text-decoration-color:var(--green);text-decoration-thickness:1.5px}
