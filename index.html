@@ -11,7 +11,7 @@
     --border:rgba(255,255,255,0.07);--fg:#f4f4f5;--fg-muted:#71717a;--fg-dim:#3f3f46;
     --orange:#f97316;--orange-dim:rgba(249,115,22,0.15);
     --green:#22c55e;--green-dim:rgba(34,197,94,0.12);--done-fg:#86efac;
-    --gold:#fbbf24;--gold-dim:rgba(251,191,36,0.13);--modal-bg:rgba(0,0,0,0.78);
+    --gold:#fbbf24;--gold-dim:rgba(251,191,36,0.13);--modal-bg:rgba(0,0,0,0.82);
     --radius:16px;--radius-sm:10px;
     --k1:#f97316;--k2:#a78bfa;--k3:#38bdf8;--k4:#f472b6;
     --k5:#4ade80;--k6:#fb923c;--k7:#e879f9;--k8:#34d399;
@@ -60,6 +60,12 @@
   .ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg-muted)}
   .kid-edit-btn{width:2rem;height:2rem;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s;flex-shrink:0}
   .kid-edit-btn:hover{background:var(--bg3);color:var(--fg-muted)}
+  .kid-top{cursor:pointer}
+  .kid-expand-btn{width:2rem;height:2rem;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.8rem;transition:background .15s,color .15s,transform .2s;flex-shrink:0}
+  .kid-expand-btn:hover{background:var(--bg3);color:var(--fg-muted)}
+  .kid-expand-btn.open{transform:rotate(180deg)}
+  .kid-jobs-collapsed{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
+  .kid-jobs-collapsed.open{max-height:1000px}
   .kid-jobs{padding:0 12px 8px;display:flex;flex-direction:column;gap:6px}
   .job-btn{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);border:none;background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;cursor:pointer;text-align:left;transition:background .15s,transform .1s;position:relative;overflow:hidden}
   .job-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:transparent;transition:background .15s}
@@ -112,51 +118,89 @@
   .btn-primary{background:var(--orange);color:#fff;border:none;padding:11px 24px;border-radius:var(--radius-sm);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;margin-top:4px}
   .btn-primary:hover{opacity:.88}
   #loading{display:flex;align-items:center;justify-content:center;padding:60px 16px;color:var(--fg-muted);font-weight:600}
-  .modal-backdrop{position:fixed;inset:0;background:var(--modal-bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;animation:fade-in .18s ease}
+
+  /* ── BIGGER MODALS ── */
+  .modal-backdrop{position:fixed;inset:0;background:var(--modal-bg);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .18s ease}
   @keyframes fade-in{from{opacity:0}to{opacity:1}}
-  @keyframes slide-up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
-  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;box-shadow:0 24px 64px rgba(0,0,0,.6);padding:24px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;animation:slide-up .22s ease}
-  .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;margin-bottom:20px}
-  .m-sec{margin-bottom:18px}
-  .m-sec label{display:block;font-size:.7rem;font-weight:700;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
-  .m-sec input[type="text"],.m-sec input[type="number"],.m-sec select{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:.95rem;font-weight:500;outline:none;transition:border-color .15s}
+  @keyframes slide-up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;box-shadow:0 32px 80px rgba(0,0,0,.7);padding:32px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;animation:slide-up .22s ease}
+  .modal h2{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;margin-bottom:24px}
+  .m-sec{margin-bottom:22px}
+  .m-sec label{display:block;font-size:.8rem;font-weight:700;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px}
+  .m-sec input[type="text"],.m-sec input[type="number"],.m-sec select{width:100%;padding:13px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1.05rem;font-weight:500;outline:none;transition:border-color .15s}
   .m-sec input:focus,.m-sec select:focus{border-color:var(--orange)}
   .m-sec select option{background:var(--bg2)}
-  .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px}
-  .emoji-btn{aspect-ratio:1;font-size:1.25rem;border:2px solid transparent;border-radius:8px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;padding:0}
+  .emoji-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .emoji-btn{aspect-ratio:1;font-size:1.5rem;border:2px solid transparent;border-radius:10px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;padding:0}
   .emoji-btn:hover{background:var(--surface)}
   .emoji-btn.selected{border-color:var(--orange)}
-  .color-grid{display:flex;gap:8px;flex-wrap:wrap}
-  .color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;outline:2px solid transparent;outline-offset:3px;transition:outline-color .12s,transform .1s}
+  .color-grid{display:flex;gap:10px;flex-wrap:wrap}
+  .color-swatch{width:34px;height:34px;border-radius:50%;cursor:pointer;outline:2px solid transparent;outline-offset:3px;transition:outline-color .12s,transform .1s}
   .color-swatch:hover{transform:scale(1.1)}
   .color-swatch.selected{outline-color:var(--fg)}
-  .job-list-edit{display:flex;flex-direction:column;gap:6px}
-  .job-edit-row{display:flex;gap:6px;align-items:center}
-  .job-edit-row input[type="text"]{flex:1}
-  .job-edit-row input[type="number"]{width:64px;flex-shrink:0}
-  .job-edit-row .rm-btn{width:34px;height:34px;flex-shrink:0;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.9rem;transition:background .12s,color .12s}
+
+  /* ── JOB EDITOR TABS ── */
+  .job-editor-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:14px}
+  .jet-btn{flex:1;padding:10px;border:none;background:var(--bg3);color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:background .15s,color .15s}
+  .jet-btn:not(:last-child){border-right:1px solid var(--border)}
+  .jet-btn.active{background:var(--orange-dim);color:var(--orange)}
+
+  /* ── JOB LIBRARY PICKER ── */
+  .lib-search{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1rem;outline:none;margin-bottom:10px;transition:border-color .15s}
+  .lib-search:focus{border-color:var(--orange)}
+  .lib-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-height:260px;overflow-y:auto;padding-right:4px}
+  .lib-grid::-webkit-scrollbar{width:4px}
+  .lib-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  .lib-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s,background .15s;text-align:left}
+  .lib-item:hover{border-color:var(--orange);background:var(--bg2)}
+  .lib-item.picked{border-color:var(--green);background:var(--green-dim)}
+  .lib-item-name{flex:1;font-size:.9rem;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lib-item-pts{font-size:.75rem;font-weight:700;color:var(--fg-muted);white-space:nowrap}
+  .lib-item.picked .lib-item-pts{color:var(--done-fg)}
+  .lib-empty{padding:24px;text-align:center;color:var(--fg-dim);font-size:.9rem;grid-column:1/-1}
+
+  /* ── CUSTOM JOB LIST ── */
+  .job-list-edit{display:flex;flex-direction:column;gap:8px}
+  .job-edit-row{display:flex;gap:8px;align-items:center}
+  .job-edit-row input[type="text"]{flex:1;padding:11px 13px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1rem;font-weight:500;outline:none;transition:border-color .15s}
+  .job-edit-row input[type="text"]:focus{border-color:var(--orange)}
+  .job-edit-row input[type="number"]{width:72px;flex-shrink:0;padding:11px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg3);color:var(--fg);font-family:'Inter',sans-serif;font-size:1rem;outline:none;transition:border-color .15s}
+  .job-edit-row input[type="number"]:focus{border-color:var(--orange)}
+  .job-edit-row .rm-btn{width:38px;height:38px;flex-shrink:0;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:1rem;transition:background .12s,color .12s}
   .job-edit-row .rm-btn:hover{background:var(--bg3);color:var(--fg-muted)}
-  .btn-add-job{width:100%;padding:9px 12px;border:1px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Inter',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;margin-top:6px;transition:border-color .15s,color .15s}
+  .btn-add-job{width:100%;padding:11px 12px;border:1px dashed var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Inter',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:6px;transition:border-color .15s,color .15s}
   .btn-add-job:hover{border-color:var(--fg-muted);color:var(--fg)}
-  .modal-actions{display:flex;gap:8px;margin-top:6px}
-  .btn-cancel{flex:1;padding:11px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+
+  .modal-actions{display:flex;gap:10px;margin-top:8px}
+  .btn-cancel{flex:1;padding:14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:transparent;color:var(--fg-muted);font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
   .btn-cancel:hover{background:var(--bg3)}
-  .btn-save{flex:2;padding:11px;border:none;border-radius:var(--radius-sm);background:var(--orange);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+  .btn-save{flex:2;padding:14px;border:none;border-radius:var(--radius-sm);background:var(--orange);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
   .btn-save:hover{opacity:.88}
-  .btn-danger{padding:11px 16px;border:1px solid rgba(239,68,68,.4);border-radius:var(--radius-sm);background:transparent;color:#f87171;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+  .btn-danger{padding:14px 18px;border:1px solid rgba(239,68,68,.4);border-radius:var(--radius-sm);background:transparent;color:#f87171;font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .15s}
   .btn-danger:hover{background:rgba(239,68,68,.1)}
-  .modal p{font-size:.9rem;color:var(--fg-muted);margin-bottom:18px;line-height:1.5}
-  .modal-icon{font-size:2.5rem;margin-bottom:8px}
-  .reward-pick-list{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
-  .reward-pick-btn{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--fg);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s}
+  .modal p{font-size:1rem;color:var(--fg-muted);margin-bottom:20px;line-height:1.5}
+  .modal-icon{font-size:3rem;margin-bottom:10px}
+  .reward-pick-list{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+  .reward-pick-btn{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);color:var(--fg);cursor:pointer;text-align:left;font-family:'Inter',sans-serif;transition:border-color .15s,background .15s}
   .reward-pick-btn:hover:not(:disabled){border-color:var(--gold);background:var(--bg2)}
   .reward-pick-btn:disabled{opacity:.35;cursor:not-allowed}
-  .rp-icon{font-size:1.4rem;flex-shrink:0}
+  .rp-icon{font-size:1.6rem;flex-shrink:0}
   .rp-info{flex:1;min-width:0}
-  .rp-name{font-weight:600;font-size:.95rem}
-  .rp-cat{font-size:.75rem;color:var(--fg-muted)}
-  .rp-cost{font-size:.85rem;font-weight:700;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
-  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);border:1px solid var(--border);color:var(--fg);padding:10px 20px;border-radius:99px;font-size:.85rem;font-weight:600;pointer-events:none;z-index:200;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .rp-name{font-weight:600;font-size:1.05rem}
+  .rp-cat{font-size:.8rem;color:var(--fg-muted)}
+  .rp-cost{font-size:.9rem;font-weight:700;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+  /* ── JOB LIBRARY MANAGE SECTION ── */
+  .lib-manage-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .lib-manage-title{font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--fg-muted)}
+  .lib-manage-list{display:flex;flex-direction:column;gap:7px}
+  .lib-manage-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg2);border:1px solid var(--border)}
+  .lib-manage-name{flex:1;font-size:.95rem;font-weight:600}
+  .lib-manage-pts{font-size:.8rem;font-weight:700;color:var(--fg-muted);font-variant-numeric:tabular-nums}
+  .lib-manage-edit{width:34px;height:34px;border-radius:8px;border:none;background:transparent;color:var(--fg-dim);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s}
+  .lib-manage-edit:hover{background:var(--bg3);color:var(--fg-muted)}
+
+  .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface);border:1px solid var(--border);color:var(--fg);padding:10px 22px;border-radius:99px;font-size:.9rem;font-weight:600;pointer-events:none;z-index:200;opacity:0;transition:opacity .2s,transform .2s;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   #tabRewards{overflow-y:auto;flex:1}
 </style>
@@ -196,9 +240,19 @@
       </div>
       <div class="rewards-grid" id="rewardsGrid"></div>
     </div>
-    <div class="history-section">
-      <div class="history-title">Redemption History</div>
+    <div class="history-section" style="margin-top:28px">
+      <div class="lib-manage-header">
+        <span class="history-title" style="margin:0">Redemption History</span>
+      </div>
       <div class="history-list" id="historyList"></div>
+    </div>
+    <div style="margin-top:28px">
+      <div class="lib-manage-header">
+        <span class="lib-manage-title">📚 Job Library</span>
+        <button class="btn-add-reward" id="btnAddLibJob">+ Add Job</button>
+      </div>
+      <p style="font-size:.8rem;color:var(--fg-muted);margin-bottom:12px">Define common jobs here, then quickly assign them to any child.</p>
+      <div class="lib-manage-list" id="libManageList"></div>
     </div>
   </div>
 </div>
@@ -206,7 +260,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, collection, onSnapshot, setDoc, deleteDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, collection, onSnapshot, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJNEvokUxLZRPUPq0y0YhczLNs_ND2_QM",
@@ -229,9 +283,8 @@ const REWARD_EMOJIS=['💵','🛍️','🎮','🍕','🎬','🏆','⭐','🎁','
 const REWARD_CATS=['Cash','Shopping','Screen Time','Food','Activity','Experience','Other'];
 const COLOR_MAP={'--k1':'#f97316','--k2':'#a78bfa','--k3':'#38bdf8','--k4':'#f472b6','--k5':'#4ade80','--k6':'#fb923c','--k7':'#e879f9','--k8':'#34d399'};
 
-let kids=[],checks={},banks={},rewards=[],history=[];
+let kids=[],checks={},banks={},rewards=[],history=[],jobLibrary=[];
 let selectedDay=new Date().getDay(),activeTab='jobs';
-let ready=0;
 
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -244,13 +297,12 @@ function showToast(msg,dur=2200){const t=document.getElementById('toast');t.text
 
 // Firestore listeners
 const wk=weekKey();
-onSnapshot(doc(db,'config','kids'),snap=>{kids=snap.data()?.list||[];tryRender();});
-onSnapshot(doc(db,'config','rewards'),snap=>{rewards=snap.data()?.list||[];tryRender();});
-onSnapshot(collection(db,'checks'),snap=>{checks={};snap.forEach(d=>{if(d.id.includes('_'+wk+'_'))checks[d.id]=true;});tryRender();});
-onSnapshot(collection(db,'banks'),snap=>{banks={};snap.forEach(d=>{banks[d.id]=d.data()?.balance||0;});tryRender();});
-onSnapshot(collection(db,'history'),snap=>{history=[];snap.forEach(d=>{history.push(d.data());});tryRender();});
-
-function tryRender(){ready++;document.getElementById('loading').hidden=true;render();}
+onSnapshot(doc(db,'config','kids'),snap=>{kids=snap.data()?.list||[];render();});
+onSnapshot(doc(db,'config','rewards'),snap=>{rewards=snap.data()?.list||[];render();});
+onSnapshot(doc(db,'config','jobLibrary'),snap=>{jobLibrary=snap.data()?.list||[];render();});
+onSnapshot(collection(db,'checks'),snap=>{checks={};snap.forEach(d=>{if(d.id.includes('_'+wk+'_'))checks[d.id]=true;});document.getElementById('loading').hidden=true;render();});
+onSnapshot(collection(db,'banks'),snap=>{banks={};snap.forEach(d=>{banks[d.id]=d.data()?.balance||0;});render();});
+onSnapshot(collection(db,'history'),snap=>{history=[];snap.forEach(d=>{history.push(d.data());});render();});
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -305,8 +357,10 @@ function renderJobs(){
     const offset=circ*(1-(jobs.length?done/jobs.length:0));
     const card=document.createElement('div');
     card.className='kid-card';
+    const PREVIEW=3;
+    const hasMore=jobs.length>PREVIEW;
     card.innerHTML=`
-      <div class="kid-top">
+      <div class="kid-top" id="kt-${kid.id}">
         <div class="kid-avatar" style="background:${col}22">${kid.emoji||'⭐'}</div>
         <div class="kid-info">
           <div class="kid-name" style="color:${col}">${esc(kid.name)}</div>
@@ -322,25 +376,42 @@ function renderJobs(){
           </svg>
           <div class="ring-label">${done}/${jobs.length}</div>
         </div>
+        ${hasMore?`<button class="kid-expand-btn" id="kexp-${kid.id}" title="Show all jobs">▾</button>`:''}
         <button class="kid-edit-btn" data-kid="${kid.id}">✎</button>
       </div>
-      <div class="kid-jobs" id="kj-${kid.id}"></div>
+      <div class="kid-jobs" id="kj-preview-${kid.id}"></div>
+      ${hasMore?`<div class="kid-jobs-collapsed" id="kj-more-${kid.id}"></div>`:''}
       <div class="kid-footer">
         <button class="btn-redeem" data-redeem="${kid.id}" ${rewards.length===0||bank===0?'disabled':''}>⭐ Redeem (${bank} pts)</button>
       </div>`;
-    const jobsEl=card.querySelector(`#kj-${kid.id}`);
-    if(!jobs.length){jobsEl.innerHTML=`<div class="no-jobs">No jobs added</div>`;}
+
+    function makeJobBtn(job){
+      const isDone=!!checks[checkKey(kid.id,job.id,selectedDay)];
+      const btn=document.createElement('button');
+      btn.className='job-btn'+(isDone?' done':'');
+      btn.innerHTML=`<div class="job-check-circle">${isDone?'✓':''}</div><span class="job-name">${esc(job.label)}</span><span class="job-pts">${job.points||1}pt</span>`;
+      btn.addEventListener('click',()=>toggleJob(kid.id,job.id));
+      return btn;
+    }
+
+    const previewEl=card.querySelector(`#kj-preview-${kid.id}`);
+    if(!jobs.length){previewEl.innerHTML=`<div class="no-jobs">No jobs assigned — tap ✎ to add</div>`;}
     else{
-      for(const job of jobs){
-        const isDone=!!checks[checkKey(kid.id,job.id,selectedDay)];
-        const btn=document.createElement('button');
-        btn.className='job-btn'+(isDone?' done':'');
-        btn.innerHTML=`<div class="job-check-circle">${isDone?'✓':''}</div><span class="job-name">${esc(job.label)}</span><span class="job-pts">${job.points||1}pt</span>`;
-        btn.addEventListener('click',()=>toggleJob(kid.id,job.id));
-        jobsEl.appendChild(btn);
+      jobs.slice(0,PREVIEW).forEach(job=>previewEl.appendChild(makeJobBtn(job)));
+      if(hasMore){
+        const moreEl=card.querySelector(`#kj-more-${kid.id}`);
+        jobs.slice(PREVIEW).forEach(job=>moreEl.appendChild(makeJobBtn(job)));
+        const expBtn=card.querySelector(`#kexp-${kid.id}`);
+        // also tap the header row to expand
+        card.querySelector(`#kt-${kid.id}`).addEventListener('click',e=>{
+          if(e.target.closest('.kid-edit-btn'))return;
+          moreEl.classList.toggle('open');
+          expBtn.classList.toggle('open');
+        });
+        expBtn.addEventListener('click',e=>{e.stopPropagation();moreEl.classList.toggle('open');expBtn.classList.toggle('open');});
       }
     }
-    card.querySelector('[data-kid]')?.addEventListener('click',()=>openKidModal(kid));
+    card.querySelector('[data-kid]')?.addEventListener('click',e=>{e.stopPropagation();openKidModal(kid);});
     card.querySelector('[data-redeem]')?.addEventListener('click',()=>openRedeemModal(kid));
     grid.appendChild(card);
   }
@@ -374,6 +445,18 @@ function renderRewards(){
       return `<div class="history-row"><div class="history-emoji">${h.emoji||'🎁'}</div><div class="history-info"><div class="history-who">${esc(kid?.name||'Unknown')}</div><div class="history-what">${esc(h.rewardName)}</div></div><div class="history-pts">−${h.cost} pts</div><div class="history-date">${fmtDate(h.ts)}</div></div>`;
     }).join('');
   }
+  // Render job library manage section
+  const lml=document.getElementById('libManageList');
+  if(!jobLibrary.length){lml.innerHTML=`<div style="padding:20px;text-align:center;color:var(--fg-dim);font-size:.9rem">No jobs in library yet</div>`;}
+  else{
+    lml.innerHTML=jobLibrary.map(j=>`
+      <div class="lib-manage-row">
+        <span class="lib-manage-name">${esc(j.label)}</span>
+        <span class="lib-manage-pts">⭐ ${j.points||1} pt${(j.points||1)!==1?'s':''}</span>
+        <button class="lib-manage-edit" data-ljid="${j.id}">✎</button>
+      </div>`).join('');
+    lml.querySelectorAll('[data-ljid]').forEach(btn=>{btn.onclick=()=>openLibJobModal(jobLibrary.find(j=>j.id===btn.dataset.ljid));});
+  }
 }
 
 function render(){renderJobs();if(activeTab==='rewards')renderRewards();}
@@ -399,7 +482,7 @@ function openRedeemModal(kid){
   const bank=kidBank(kid.id);
   openModal(`
     <h2>Redeem — ${esc(kid.name)}</h2>
-    <p style="margin-bottom:10px"><span class="kid-bank" style="font-size:.9rem"><span>⭐</span>${bank} pts available</span></p>
+    <p style="margin-bottom:12px"><span class="kid-bank" style="font-size:1rem"><span>⭐</span>${bank} pts available</span></p>
     <div class="reward-pick-list">
       ${rewards.map(r=>`<button class="reward-pick-btn" data-rid="${r.id}" ${bank<r.cost?'disabled':''}><span class="rp-icon">${r.emoji||'🎁'}</span><div class="rp-info"><div class="rp-name">${esc(r.name)}</div><div class="rp-cat">${esc(r.category||'')}</div></div><span class="rp-cost">⭐ ${r.cost}</span></button>`).join('')}
       ${!rewards.length?`<div style="text-align:center;padding:24px;color:var(--fg-dim)">No rewards set up yet</div>`:''}
@@ -421,34 +504,117 @@ function openRedeemModal(kid){
 function openModal(html){closeModal();const bd=document.createElement('div');bd.className='modal-backdrop';bd.id='modal-bd';bd.innerHTML=`<div class="modal">${html}</div>`;bd.addEventListener('click',e=>{if(e.target===bd)closeModal();});document.body.appendChild(bd);}
 function closeModal(){document.getElementById('modal-bd')?.remove();}
 
-function jobRow(label='',pts=1){const jid=uid();return `<div class="job-edit-row" data-jid="${jid}"><input type="text" value="${esc(label)}" placeholder="Job name" maxlength="50"><input type="number" value="${pts}" min="1" max="99" title="Points"><button class="rm-btn" type="button">✕</button></div>`;}
-function wireRm(){document.querySelectorAll('.rm-btn').forEach(b=>{b.onclick=()=>b.closest('.job-edit-row').remove();});}
-
+// ── Kid modal with Library picker + Custom jobs tabs ──
 function openKidModal(kid){
   const isNew=!kid;
-  const name=kid?.name||'',emoji=kid?.emoji||'😎',color=kid?.color||'--k1',jobs=kid?.jobs||[];
+  const name=kid?.name||'',emoji=kid?.emoji||'😎',color=kid?.color||'--k1';
+  const assignedJobs=kid?.jobs ? [...kid.jobs] : [];
+  let selEmoji=emoji,selColor=color,jobMode='library';
+  // which library items are already assigned (by libId or matching label)
+  const pickedLibIds=new Set(assignedJobs.filter(j=>j.libId).map(j=>j.libId));
+
   openModal(`
     <h2>${isNew?'Add Child':'Edit '+esc(kid.name)}</h2>
     <div class="m-sec"><label>Name</label><input type="text" id="mName" value="${esc(name)}" placeholder="Child's name" maxlength="30"></div>
     <div class="m-sec"><label>Avatar</label><div class="emoji-grid">${EMOJIS.map(e=>`<button class="emoji-btn${e===emoji?' selected':''}" data-e="${e}" type="button">${e}</button>`).join('')}</div></div>
     <div class="m-sec"><label>Color</label><div class="color-grid">${KID_COLORS.map(c=>`<div class="color-swatch${c===color?' selected':''}" data-c="${c}" style="background:${cv(c)}"></div>`).join('')}</div></div>
-    <div class="m-sec"><label>Jobs</label><div class="job-list-edit" id="mJobs">${jobs.map(j=>jobRow(j.label,j.points||1)).join('')}</div><button class="btn-add-job" id="mAddJob" type="button">+ Add job</button></div>
+    <div class="m-sec">
+      <label>Jobs</label>
+      <div class="job-editor-tabs">
+        <button class="jet-btn active" id="jetLib">📚 From Library</button>
+        <button class="jet-btn" id="jetCustom">✏️ Custom</button>
+      </div>
+      <div id="jobLibPane">
+        <input class="lib-search" id="libSearch" placeholder="Search library…" type="text">
+        <div class="lib-grid" id="libGrid"></div>
+      </div>
+      <div id="jobCustomPane" hidden>
+        <div class="job-list-edit" id="mJobs">${assignedJobs.filter(j=>!j.libId).map(j=>jobRow(j.id,j.label,j.points||1)).join('')}</div>
+        <button class="btn-add-job" id="mAddJob" type="button">+ Add custom job</button>
+      </div>
+    </div>
     <div class="modal-actions">${!isNew?`<button class="btn-danger" id="mDel">Delete</button>`:''}<button class="btn-cancel" id="mCancel">Cancel</button><button class="btn-save" id="mSave">${isNew?'Add Child':'Save'}</button></div>`);
-  let selEmoji=emoji,selColor=color;
+
   document.getElementById('mName').focus();
+
+  // Emoji / color pickers
   document.querySelector('.emoji-grid').addEventListener('click',e=>{const b=e.target.closest('.emoji-btn');if(!b)return;selEmoji=b.dataset.e;document.querySelectorAll('.emoji-btn').forEach(x=>x.classList.toggle('selected',x===b));});
   document.querySelector('.color-grid').addEventListener('click',e=>{const s=e.target.closest('.color-swatch');if(!s)return;selColor=s.dataset.c;document.querySelectorAll('.color-swatch').forEach(x=>x.classList.toggle('selected',x===s));});
-  document.getElementById('mAddJob').onclick=()=>{const list=document.getElementById('mJobs');const tmp=document.createElement('div');tmp.innerHTML=jobRow();list.appendChild(tmp.firstElementChild);wireRm();list.lastElementChild.querySelector('input').focus();};
+
+  // Render library grid
+  function renderLibGrid(filter=''){
+    const grid=document.getElementById('libGrid');
+    const items=jobLibrary.filter(j=>!filter||j.label.toLowerCase().includes(filter.toLowerCase()));
+    if(!items.length){grid.innerHTML=`<div class="lib-empty">${jobLibrary.length?'No matches':'Library is empty — add jobs in the Rewards tab'}</div>`;return;}
+    grid.innerHTML=items.map(j=>`<button class="lib-item${pickedLibIds.has(j.id)?' picked':''}" data-lid="${j.id}"><span class="lib-item-name">${esc(j.label)}</span><span class="lib-item-pts">${pickedLibIds.has(j.id)?'✓ ':''} ${j.points||1}pt</span></button>`).join('');
+    grid.querySelectorAll('.lib-item').forEach(btn=>{
+      btn.onclick=()=>{
+        const lid=btn.dataset.lid;
+        if(pickedLibIds.has(lid)){pickedLibIds.delete(lid);}else{pickedLibIds.add(lid);}
+        renderLibGrid(document.getElementById('libSearch').value);
+      };
+    });
+  }
+  renderLibGrid();
+  document.getElementById('libSearch').addEventListener('input',e=>renderLibGrid(e.target.value));
+
+  // Tab toggle
+  document.getElementById('jetLib').onclick=()=>{jobMode='library';document.getElementById('jetLib').classList.add('active');document.getElementById('jetCustom').classList.remove('active');document.getElementById('jobLibPane').hidden=false;document.getElementById('jobCustomPane').hidden=true;};
+  document.getElementById('jetCustom').onclick=()=>{jobMode='custom';document.getElementById('jetCustom').classList.add('active');document.getElementById('jetLib').classList.remove('active');document.getElementById('jobLibPane').hidden=true;document.getElementById('jobCustomPane').hidden=false;};
+
+  // Custom jobs
+  document.getElementById('mAddJob').onclick=()=>{const list=document.getElementById('mJobs');const tmp=document.createElement('div');const jid=uid();tmp.innerHTML=jobRow(jid,'',1);list.appendChild(tmp.firstElementChild);wireRm();list.lastElementChild.querySelector('input[type="text"]').focus();};
   wireRm();
   document.getElementById('mCancel').onclick=closeModal;
   document.getElementById('mDel')?.addEventListener('click',async()=>{kids=kids.filter(k=>k.id!==kid.id);await setDoc(doc(db,'config','kids'),{list:kids});closeModal();render();showToast(`🗑️ Removed ${kid.name}`);});
+
   document.getElementById('mSave').onclick=async()=>{
     const nameVal=document.getElementById('mName').value.trim();if(!nameVal){document.getElementById('mName').focus();return;}
-    const newJobs=[];
-    document.querySelectorAll('.job-edit-row').forEach(row=>{const lbl=row.querySelector('input[type="text"]').value.trim();const pts=parseInt(row.querySelector('input[type="number"]').value)||1;if(lbl)newJobs.push({id:row.dataset.jid||uid(),label:lbl,points:pts});});
+    // Collect library jobs
+    const libJobs=jobLibrary.filter(j=>pickedLibIds.has(j.id)).map(j=>({id:j.id,libId:j.id,label:j.label,points:j.points||1}));
+    // Collect custom jobs
+    const customJobs=[];
+    document.querySelectorAll('.job-edit-row').forEach(row=>{const lbl=row.querySelector('input[type="text"]').value.trim();const pts=parseInt(row.querySelector('input[type="number"]').value)||1;if(lbl)customJobs.push({id:row.dataset.jid||uid(),label:lbl,points:pts});});
+    const newJobs=[...libJobs,...customJobs];
     if(isNew)kids.push({id:uid(),name:nameVal,emoji:selEmoji,color:selColor,jobs:newJobs});
     else{const i=kids.findIndex(k=>k.id===kid.id);kids[i]={...kids[i],name:nameVal,emoji:selEmoji,color:selColor,jobs:newJobs};}
     await setDoc(doc(db,'config','kids'),{list:kids});closeModal();render();showToast(isNew?`🎉 Added ${nameVal}!`:`✅ Saved ${nameVal}`);
+  };
+}
+
+function jobRow(jid,label='',pts=1){return `<div class="job-edit-row" data-jid="${jid}"><input type="text" value="${esc(label)}" placeholder="Job name" maxlength="50"><input type="number" value="${pts}" min="1" max="99" title="Points"><button class="rm-btn" type="button">✕</button></div>`;}
+function wireRm(){document.querySelectorAll('.rm-btn').forEach(b=>{b.onclick=()=>b.closest('.job-edit-row').remove();});}
+
+// ── Job Library item modal ──
+function openLibJobModal(job){
+  const isNew=!job;
+  const label=job?.label||'',pts=job?.points||1;
+  openModal(`
+    <h2>${isNew?'Add Library Job':'Edit Library Job'}</h2>
+    <div class="m-sec"><label>Job Name</label><input type="text" id="ljLabel" value="${esc(label)}" placeholder="e.g. Make bed, Empty dishwasher" maxlength="50"></div>
+    <div class="m-sec"><label>Points</label><input type="number" id="ljPts" value="${pts}" min="1" max="99"></div>
+    <div class="modal-actions">${!isNew?`<button class="btn-danger" id="ljDel">Delete</button>`:''}<button class="btn-cancel" id="ljCancel">Cancel</button><button class="btn-save" id="ljSave">${isNew?'Add to Library':'Save'}</button></div>`);
+  document.getElementById('ljLabel').focus();
+  document.getElementById('ljCancel').onclick=closeModal;
+  document.getElementById('ljDel')?.addEventListener('click',async()=>{
+    jobLibrary=jobLibrary.filter(j=>j.id!==job.id);
+    await setDoc(doc(db,'config','jobLibrary'),{list:jobLibrary});
+    // Remove this lib job from all kids
+    kids=kids.map(k=>({...k,jobs:(k.jobs||[]).filter(j=>j.libId!==job.id)}));
+    await setDoc(doc(db,'config','kids'),{list:kids});
+    closeModal();renderRewards();render();showToast('🗑️ Removed from library');
+  });
+  document.getElementById('ljSave').onclick=async()=>{
+    const lbl=document.getElementById('ljLabel').value.trim();if(!lbl){document.getElementById('ljLabel').focus();return;}
+    const p=parseInt(document.getElementById('ljPts').value)||1;
+    if(isNew){const nj={id:uid(),label:lbl,points:p};jobLibrary.push(nj);}
+    else{const i=jobLibrary.findIndex(j=>j.id===job.id);jobLibrary[i]={...jobLibrary[i],label:lbl,points:p};
+      // Sync updated label/pts into any kids who have this lib job
+      kids=kids.map(k=>({...k,jobs:(k.jobs||[]).map(j=>j.libId===job.id?{...j,label:lbl,points:p}:j)}));
+      await setDoc(doc(db,'config','kids'),{list:kids});
+    }
+    await setDoc(doc(db,'config','jobLibrary'),{list:jobLibrary});
+    closeModal();renderRewards();render();showToast(isNew?`📚 Added to library!`:`✅ Saved`);
   };
 }
 
@@ -498,8 +664,8 @@ function openManageModal(){
   if(!kids.length){openKidModal(null);return;}
   openModal(`
     <h2>Manage Children</h2>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
-      ${kids.map(k=>`<button class="job-btn" data-kid="${k.id}" style="border-left:3px solid ${cv(k.color||'--k1')}"><span style="font-size:1.2rem;flex-shrink:0">${k.emoji||'⭐'}</span><span class="job-name" style="font-size:.95rem;font-weight:600">${esc(k.name)}</span><span style="color:var(--fg-muted);font-size:.8rem">${(k.jobs||[]).length} jobs · ${kidBank(k.id)} pts</span><span style="color:var(--fg-dim)">›</span></button>`).join('')}
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+      ${kids.map(k=>`<button class="job-btn" data-kid="${k.id}" style="border-left:3px solid ${cv(k.color||'--k1')};padding:14px 16px"><span style="font-size:1.4rem;flex-shrink:0">${k.emoji||'⭐'}</span><span class="job-name" style="font-size:1.05rem;font-weight:600">${esc(k.name)}</span><span style="color:var(--fg-muted);font-size:.85rem">${(k.jobs||[]).length} jobs · ${kidBank(k.id)} pts</span><span style="color:var(--fg-dim)">›</span></button>`).join('')}
     </div>
     <div class="modal-actions"><button class="btn-cancel" id="mClose">Close</button><button class="btn-save" id="mAddNew">+ Add Child</button></div>`);
   document.getElementById('mClose').onclick=closeModal;
@@ -511,9 +677,9 @@ document.getElementById('btnAddKid').onclick=()=>openKidModal(null);
 document.getElementById('btnReset').onclick=openResetModal;
 document.getElementById('btnSettings').onclick=openManageModal;
 document.getElementById('btnAddReward').onclick=()=>openRewardModal(null);
+document.getElementById('btnAddLibJob').onclick=()=>openLibJobModal(null);
 
 buildDayStrip();
 </script>
 </body>
 </html>
-
