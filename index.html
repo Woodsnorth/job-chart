@@ -250,7 +250,7 @@ onSnapshot(collection(db,'checks'),snap=>{checks={};snap.forEach(d=>{if(d.id.inc
 onSnapshot(collection(db,'banks'),snap=>{banks={};snap.forEach(d=>{banks[d.id]=d.data()?.balance||0;});tryRender();});
 onSnapshot(collection(db,'history'),snap=>{history=[];snap.forEach(d=>{history.push(d.data());});tryRender();});
 
-function tryRender(){ready++;if(ready>=4){document.getElementById('loading').hidden=true;render();}}
+function tryRender(){ready++;document.getElementById('loading').hidden=true;render();}
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -516,3 +516,4 @@ buildDayStrip();
 </script>
 </body>
 </html>
+
